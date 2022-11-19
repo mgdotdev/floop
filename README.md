@@ -27,8 +27,9 @@ if __name__ == "__main__":
 ```
 
 floop.loop is a C extension which has an internal event loop that continuously
-calls the function. If the function returns None, the loop continues. If the
-function return != None, or raises an error, the result breaks the loop.
+calls a given function. If the function returns None, the loop continues. If the
+function return is not None, or the function raises an error, the result breaks
+the loop.
 
 performance results:
 ```
