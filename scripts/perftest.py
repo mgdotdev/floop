@@ -1,6 +1,6 @@
 import time
 
-from floop.extensions import loop as c_loop
+from floop import loop as c_loop
 
 TGT = 1_000_000
 

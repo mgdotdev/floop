@@ -4,7 +4,7 @@ from os.path import join
 
 c_extensions = [
     Extension(
-        "floop.extensions",
+        "floop.tools.extensions",
         [join("src", "floop", "tools", "extensions.c")]
     ),
 ]

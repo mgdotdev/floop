@@ -1,4 +1,4 @@
-from floop.extensions import loop
+from floop import loop
 
 import pytest
 
