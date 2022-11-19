@@ -31,7 +31,9 @@ calls the function. If the function returns None, the loop continues. If the
 function return != None, or raises an error, the result breaks the loop.
 
 performance results:
+```
 $+ python ./scripts/perftest.py
 py_loop: 0.06991245297831483
 c_loop: 0.04349226297927089
 while-loop: 0.05318959499709308
+```
