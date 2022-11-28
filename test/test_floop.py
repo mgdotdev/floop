@@ -1,4 +1,4 @@
-from floop import loop
+from floop import loop, config
 
 import pytest
 
@@ -43,3 +43,36 @@ class TestFloop:
                 return coll
 
         assert loop(fn, []) == [1,2,3,4,5]
+
+class TestConfig:
+    def test_callback(self):
+        def fn():
+            return 1, 2
+
+        result = loop(config(fn, callback=lambda x, y: x == 1 and y == 2))
+
+        assert result == (1, 2)
+
+    def test_max_iter(self):
+
+        count = 0
+        def fn():
+            nonlocal count
+            count += 1
+
+        loop(config(fn, max_iter=500))
+
+        assert count == 500
+
+    def test_as_decorator_with_kwargs(self):
+        count = 0
+
+        @config(max_iter=500)
+        def fn():
+            nonlocal count
+            count += 1
+
+        loop(fn)
+
+        assert count == 500
+
