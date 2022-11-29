@@ -18,9 +18,6 @@ def config(*args, **kwargs):
     if not args:
         return lambda fn: config(fn, **kwargs)
 
-    def _fn(*args, **kwargs):
-        return fn(*args, **kwargs)
-
     fn, *excess_args = args
 
     if excess_args:
@@ -30,6 +27,9 @@ def config(*args, **kwargs):
 
     if not isinstance(fn, Callable):
         raise ValueError("fn is not callable")
+
+    def _fn(*args, **kwargs):
+        return fn(*args, **kwargs)
 
     _fn._fn = fn
     _fn._loop_configuration = kwargs
