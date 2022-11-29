@@ -31,12 +31,14 @@ calls a given function. If the function returns None, the loop continues. If the
 function return is not None, or the function raises an error, the result breaks
 the loop.
 
+The resulting implementation is ~15-20% faster than the analogous `while` loop.
+
 performance results:
 ```bash
 $+ python ./scripts/perftest.py
-py_loop: 0.0657837409817148
-c_loop: 0.04186304798349738
-while-loop: 0.05020367301767692
+py_loop: 0.0675829200190492
+c_loop: 0.042481004988076165
+while-loop: 0.049228249001316726
 ```
 
 floop.loop is configurable, to allow actions like selective breaks and iter

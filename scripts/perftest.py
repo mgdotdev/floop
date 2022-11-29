@@ -35,7 +35,7 @@ def main():
     start=time.perf_counter()
     exe = execute()
     val = None
-    while val is None:
+    while not val:
         val = exe()
     end=time.perf_counter()
 
