@@ -54,6 +54,17 @@ class TestConfig:
 
         assert result == (1, 2)
 
+    def test_callback_mutable_args(self):
+
+        @config(callback=lambda c: len(c) == 500)
+        def fn(coll):
+            coll.append(len(coll))
+            return coll
+
+        coll = loop(fn, [])
+
+        assert len(coll) == 500
+
     def test_max_iter(self):
 
         count = 0

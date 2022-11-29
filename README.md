@@ -32,9 +32,38 @@ function return is not None, or the function raises an error, the result breaks
 the loop.
 
 performance results:
-```
+```bash
 $+ python ./scripts/perftest.py
 py_loop: 0.06991245297831483
 c_loop: 0.04349226297927089
 while-loop: 0.05318959499709308
+```
+
+floop.loop is configurable, to allow actions like selective breaks and iter
+limits
+
+```python
+
+from floop import loop, config
+
+if __name__ == "__main__":
+    count = 0
+
+    @config(max_iter=500)
+    def fn():
+        nonlocal count
+        count += 1
+
+    loop(fn)
+
+    assert count == 500
+
+   def fn(coll):
+       coll.append(len(coll))
+       return coll
+
+    coll = loop(config(fn, callback=lambda coll: len(coll) == 500))
+
+    assert len(coll) == 500
+
 ```

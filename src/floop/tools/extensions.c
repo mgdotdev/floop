@@ -27,7 +27,8 @@ PyObject* configured_loop(PyObject* wrapped, PyObject* args, PyObject* kwargs) {
     PyObject *config = PyObject_GetAttrString(wrapped, "_loop_configuration");
     PyObject *fn = PyObject_GetAttrString(wrapped, "_fn");
 
-    PyObject *result = NULL, *callback = NULL, *cb_result = NULL;
+    PyObject *result = NULL, *callback = NULL, *cb_result = NULL, *cb_args = NULL;
+
     long max_iter = 0;
 
     PyObject *key, *value;
@@ -45,8 +46,18 @@ PyObject* configured_loop(PyObject* wrapped, PyObject* args, PyObject* kwargs) {
     for (;;) {
         result = PyObject_Call(fn, args, kwargs);
         if (callback) {
-            cb_result = PyObject_CallObject(callback, result);
+            if (!PyTuple_Check(result)) {
+                cb_args = PyTuple_New(1);
+                PyTuple_SET_ITEM(cb_args, 0, result);
+                Py_INCREF(result);
+            }
+            else {
+                cb_args = result;
+                Py_INCREF(cb_args);
+            }
+            cb_result = PyObject_CallObject(callback, cb_args);
             int check = cb_result == Py_True;
+            Py_DECREF(cb_args);
             if (check) {
                 Py_DECREF(cb_result);
                 Py_DECREF(fn);
