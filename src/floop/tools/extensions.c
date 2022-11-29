@@ -1,6 +1,6 @@
 #include <Python.h>
+#include <stdarg.h>
 
-void bk() {return;}
 
 int _keys_match(PyObject* key, char* id) {
     if (PyUnicode_CompareWithASCIIString(key, id) == 0) {
@@ -40,20 +40,22 @@ PyObject* configured_loop(PyObject* wrapped, PyObject* args, PyObject* kwargs) {
             max_iter = PyLong_AsLong(value);
         }
     }
+    Py_DECREF(config);
 
     for (;;) {
         result = PyObject_Call(fn, args, kwargs);
-
         if (callback) {
             cb_result = PyObject_CallObject(callback, result);
             int check = cb_result == Py_True;
-            Py_DECREF(cb_result);
             if (check) {
+                Py_DECREF(cb_result);
+                Py_DECREF(fn);
                 return result;
             }
         }
         if (max_iter) {
             if (max_iter == 1) {
+                Py_DECREF(fn);
                 return result;
             }
             max_iter -= 1;
@@ -73,7 +75,10 @@ PyObject* loop(PyObject* self, PyObject* args, PyObject* kwargs) {
         && PyObject_HasAttrString(_fn, "_fn")
         ? &configured_loop : &basic_loop
     );
-    return execute(_fn, _args, kwargs);
+
+    PyObject* result = execute(_fn, _args, kwargs);
+    Py_DECREF(_args);
+    return result;
 }
 
 
