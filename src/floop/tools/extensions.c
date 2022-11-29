@@ -23,8 +23,10 @@ PyObject* basic_loop(PyObject* fn, PyObject* args, PyObject* kwargs) {
 }
 
 
-PyObject* configured_loop(PyObject* fn, PyObject* args, PyObject* kwargs) {
-    PyObject *config = PyObject_GetAttrString(fn, "_loop_configuration");
+PyObject* configured_loop(PyObject* wrapped, PyObject* args, PyObject* kwargs) {
+    PyObject *config = PyObject_GetAttrString(wrapped, "_loop_configuration");
+    PyObject *fn = PyObject_GetAttrString(wrapped, "_fn");
+
     PyObject *result = NULL, *callback = NULL, *cb_result = NULL;
     long max_iter = 0;
 
@@ -66,8 +68,11 @@ PyObject* loop(PyObject* self, PyObject* args, PyObject* kwargs) {
     PyObject* _args = PyTuple_GetSlice(args, 1, PyTuple_Size(args));
 
     PyObject* (*execute)(PyObject*, PyObject*, PyObject*);
-    execute = PyObject_HasAttrString(_fn, "_loop_configuration")
-        ? &configured_loop : &basic_loop;
+    execute = (
+        PyObject_HasAttrString(_fn, "_loop_configuration")
+        && PyObject_HasAttrString(_fn, "_fn")
+        ? &configured_loop : &basic_loop
+    );
     return execute(_fn, _args, kwargs);
 }
 

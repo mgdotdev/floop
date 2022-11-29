@@ -44,6 +44,7 @@ class TestFloop:
 
         assert loop(fn, []) == [1,2,3,4,5]
 
+
 class TestConfig:
     def test_callback(self):
         def fn():
