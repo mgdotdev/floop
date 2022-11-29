@@ -2,7 +2,7 @@
 #include <stdarg.h>
 
 
-int _keys_match(PyObject* key, char* id) {
+static int _keys_match(PyObject* key, char* id) {
     if (PyUnicode_CompareWithASCIIString(key, id) == 0) {
         return 1;
     }
@@ -10,9 +10,25 @@ int _keys_match(PyObject* key, char* id) {
 }
 
 
-PyObject* basic_loop(PyObject* fn, PyObject* args, PyObject* kwargs) {
+static PyObject* fast_loop(PyObject* fn) {
     PyObject* result = NULL;
 
+    for (;;) {
+        result = PyObject_CallNoArgs(fn);
+        if (result != Py_None) {
+            return result;
+        }
+        Py_DECREF(result);
+    }
+}
+
+
+static PyObject* basic_loop(PyObject* fn, PyObject* args, PyObject* kwargs) {
+    if (!PyTuple_Size(args) && !(!kwargs || !PyDict_Size(kwargs))) {
+        return fast_loop(fn);
+    }
+
+    PyObject* result = NULL;
     for (;;) {
         result = PyObject_Call(fn, args, kwargs);
         if (result != Py_None) {
@@ -23,7 +39,7 @@ PyObject* basic_loop(PyObject* fn, PyObject* args, PyObject* kwargs) {
 }
 
 
-PyObject* configured_loop(PyObject* wrapped, PyObject* args, PyObject* kwargs) {
+static PyObject* configured_loop(PyObject* wrapped, PyObject* args, PyObject* kwargs) {
     PyObject *config = PyObject_GetAttrString(wrapped, "_loop_configuration");
     PyObject *fn = PyObject_GetAttrString(wrapped, "_fn");
 
@@ -76,7 +92,7 @@ PyObject* configured_loop(PyObject* wrapped, PyObject* args, PyObject* kwargs) {
 }
 
 
-PyObject* loop(PyObject* self, PyObject* args, PyObject* kwargs) {
+static PyObject* loop(PyObject* self, PyObject* args, PyObject* kwargs) {
     PyObject* _fn = PyTuple_GetItem(args, 0);
     PyObject* _args = PyTuple_GetSlice(args, 1, PyTuple_Size(args));
 

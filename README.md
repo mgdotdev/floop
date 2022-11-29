@@ -34,9 +34,9 @@ the loop.
 performance results:
 ```bash
 $+ python ./scripts/perftest.py
-py_loop: 0.06991245297831483
-c_loop: 0.04349226297927089
-while-loop: 0.05318959499709308
+py_loop: 0.0657837409817148
+c_loop: 0.04186304798349738
+while-loop: 0.05020367301767692
 ```
 
 floop.loop is configurable, to allow actions like selective breaks and iter

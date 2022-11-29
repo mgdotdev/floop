@@ -12,7 +12,7 @@ c_extensions = [
 setup(
     name="floop",
     version="0.0.1",
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     description="fast loops in python",
     url="https://github.com/1mikegrn/floop",
     author="Michael Green",
