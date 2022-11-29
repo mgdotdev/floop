@@ -47,23 +47,22 @@ limits
 from floop import loop, config
 
 if __name__ == "__main__":
-    count = 0
 
-    @config(max_iter=500)
+    @config(callback=lambda coll: len(coll) == 500)
+    def fn(coll):
+        coll.append(len(coll))
+        return coll
+
+    coll = loop(fn, [])
+
+    assert len(coll) == 500
+
+    count = 0
     def fn():
         nonlocal count
         count += 1
 
-    loop(fn)
+    loop(config(fn, max_iter=500))
 
     assert count == 500
-
-   def fn(coll):
-       coll.append(len(coll))
-       return coll
-
-    coll = loop(config(fn, callback=lambda coll: len(coll) == 500))
-
-    assert len(coll) == 500
-
 ```
