@@ -36,9 +36,10 @@ The resulting implementation is ~15-20% faster than the analogous `while` loop.
 performance results:
 ```bash
 $+ python ./scripts/perftest.py
-py_loop: 0.0675829200190492
-c_loop: 0.042481004988076165
-while-loop: 0.049228249001316726
+py_loop----- 0.06751498499943409
+c_loop------ 0.043669621998560615
+while-loop-- 0.05094353300228249
+deque------- 0.05047171100159176
 ```
 
 floop.loop is configurable, to allow actions like selective breaks and iter
